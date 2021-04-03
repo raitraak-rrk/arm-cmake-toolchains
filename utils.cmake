@@ -43,6 +43,13 @@ function(generate_object target suffix type)
             BYPRODUCTS "${CMAKE_CURRENT_BINARY_DIR}/${target}${suffix}")
 endfunction()
 
+# Add a command to generate firmare listing
+function(generate_listing target)
+    add_custom_command(TARGET ${target} POST_BUILD
+        COMMAND ${CMAKE_OBJDUMP} -D -S -l "${CMAKE_CURRENT_BINARY_DIR}/${target}${CMAKE_EXECUTABLE_SUFFIX}" > "${CMAKE_CURRENT_BINARY_DIR}/${target}.lst"
+    )
+endfunction()
+
 # Add custom linker script to the linker flags
 function(linker_script_add path_to_script)
     string(APPEND CMAKE_EXE_LINKER_FLAGS " -T ${path_to_script}")
