@@ -10,8 +10,11 @@
 # ```
 macro(clang_utils_get_arm_gcc_sysroot compiler cpu_flags)
     execute_process(COMMAND ${compiler}
-        ${cpu_flags} -print-sysroot OUTPUT_VARIABLE ARM_GCC_SYSROOT
+        ${cpu_flags} -print-sysroot OUTPUT_VARIABLE __ARM_GCC_SYSROOT
         OUTPUT_STRIP_TRAILING_WHITESPACE)
+    #message("__ARM_GCC_SYSROOT ${__ARM_GCC_SYSROOT}")
+    file(TO_CMAKE_PATH ${__ARM_GCC_SYSROOT} ARM_GCC_SYSROOT)
+    #message("ARM_GCC_SYSROOT ${ARM_GCC_SYSROOT}")
 endmacro()
 
 # Retrieve ARM GCC multilib directory for further usage with Clang
@@ -28,6 +31,7 @@ macro(clang_utils_get_arm_gcc_multilib_dir compiler cpu_flags)
     execute_process(COMMAND ${compiler} ${cpu_flags} -print-multi-directory
         OUTPUT_VARIABLE ARM_GCC_MULTIDIR
         OUTPUT_STRIP_TRAILING_WHITESPACE)
+    #message("ARM_GCC_MULTIDIR ${ARM_GCC_MULTIDIR}")
 endmacro()
 
 # Retrieve ARM GCC libgcc directory for further usage with Clang
@@ -44,9 +48,8 @@ macro(clang_utils_get_arm_gcc_lib_dir compiler cpu_flags)
     execute_process(COMMAND ${compiler} ${cpu_flags} -print-libgcc-file-name
         OUTPUT_VARIABLE __ARM_GCC_LIBGCC
         OUTPUT_STRIP_TRAILING_WHITESPACE)
-    execute_process(COMMAND dirname ${__ARM_GCC_LIBGCC}
-        OUTPUT_VARIABLE ARM_GCC_LIBGCC_DIR
-        OUTPUT_STRIP_TRAILING_WHITESPACE)
+    get_filename_component(ARM_GCC_LIBGCC_DIR ${__ARM_GCC_LIBGCC} DIRECTORY)
+    #message("ARM_GCC_LIBGCC_DIR ${ARM_GCC_LIBGCC_DIR}")
 endmacro()
 
 # Set ARM GCC CRT objects variables for further usage with Clang
@@ -65,9 +68,12 @@ endmacro()
 # ```
 macro(clang_utils_get_arm_gcc_crt sysroot multilib_dir libgcc_dir)
     set(CRT0_OBJ ${sysroot}/lib/${multilib_dir}/crt0.o)
+    #message("CRT0_OBJ ${CRT0_OBJ}")
     set(CRT_OBJ ${libgcc_dir}/crti.o
         ${libgcc_dir}/crtn.o
         ${libgcc_dir}/crtfastmath.o
         ${libgcc_dir}/crtbegin.o
         ${libgcc_dir}/crtend.o)
+    #message("CRT_OBJ ${CRT_OBJ}")
+
 endmacro()
