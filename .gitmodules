@@ -1,3 +1,0 @@
-[submodule "examples/efm32/gecko_sdk"]
-	path = examples/efm32/gecko_sdk
-	url = https://github.com/SiliconLabs/gecko_sdk.git
